@@ -11,10 +11,10 @@
 #include <assert.h>
 #include <string.h>
 
-#include <secp256k1.h>
-#include <secp256k1_extrakeys.h>
-#include <secp256k1_schnorrsig.h>
-#include <random.h>
+#include "secp256k1.h"
+#include "secp256k1_extrakeys.h"
+#include "secp256k1_schnorrsig.h"
+#include "random.h"
 
 int main(void) {
     unsigned char msg[12] = "Hello World!";
