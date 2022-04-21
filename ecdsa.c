@@ -10,6 +10,8 @@
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
+#include <openssl/crypto.h>
+#include <openssl/sha.h>
 
 #include "secp256k1.h"
 
@@ -29,6 +31,7 @@ int main(void) {
         0x61, 0x2B, 0x1F, 0xCE, 0x77, 0xC8, 0x69, 0x34,
         0x5B, 0xFC, 0x94, 0xC7, 0x58, 0x94, 0xED, 0xD3,
     };
+    unsigned char entropy[32];
     unsigned char seckey[32];
     unsigned char randomize[32];
     unsigned char compressed_pubkey[33];
