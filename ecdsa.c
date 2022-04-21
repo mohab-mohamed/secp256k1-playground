@@ -10,6 +10,8 @@
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
+#include <openssl/crypto.h>
+#include <openssl/sha.h>
 
 #include "secp256k1.h"
 
