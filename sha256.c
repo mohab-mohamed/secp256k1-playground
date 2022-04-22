@@ -1,6 +1,9 @@
 #include <openssl/sha.h>
 #include <stdio.h>
 
+// $ gcc -o sha256 sha256.c -L/usr/lib -lcrypto
+
+
 int main(int argc, char **argv)
  {
     unsigned char buffer[BUFSIZ];
