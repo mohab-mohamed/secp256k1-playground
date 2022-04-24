@@ -11,14 +11,9 @@ static int generate_random_bytes(unsigned char *buf, int num)
 }
 
 // implements sha256
-static hash_via_sha256(unsigned char *buf, SHA256_CTX ctx, size_t length) 
+static hash_via_sha256(unsigned char *data, size_t length, unsigned char buffer) 
 {
-        SHA256_Init(&ctx);
-        do {
-                SHA256_Update(&ctx, buffer, len);
-        } while (len == BUFSIZ);
-
-        SHA256_Final(buffer, &ctx);
+        *SHA256(data, length, buffer);
 }
 
 
