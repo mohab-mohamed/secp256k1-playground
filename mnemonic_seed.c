@@ -18,7 +18,7 @@ static hash_via_sha256(unsigned char *data, size_t length, unsigned char buffer)
 
 
 // appends checksum 
-// static void append_checksum
+static void append_checksum
 
 // implements pbkdf2
 static void seed_via_pbkdf2(uint8_t *password, size_t password_lentgh, 
@@ -28,7 +28,13 @@ static void seed_via_pbkdf2(uint8_t *password, size_t password_lentgh,
         fastpbkdf2_hmac_sha512(pw, npw, salt, nsalt, iterations, out, nout);
 }
 
+// ---------------helper functions ------------------------------
 
+// slices a string
+void slice(const unsigned char *str, char *result, size_t start, size_t end)
+{
+    strncpy(result, str + start, end - start);
+}
 
 // prints byte array into hex string
 static void dump(const char *label, const uint8_t *data, size_t n)
