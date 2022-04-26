@@ -91,15 +91,22 @@ int main(int argc, char **argv)
         unsigned char entropy[32];
         unsigned char entropy_str[256];
         random = generate_random_bytes(entropy, 32);
-        unsigned char bit_str[8];
-        for(size_t i = 0; i < sizeof(entropy); i++) {
-                char_to_bit_string(entropy[i], bit_str);
-                for(size_t j = 0; j < sizeof(bit_str); j++) {
-                        entropy_str[i*8 + j] = bit_str[j];
-                        printf("i: %ld, j: %ld, i*8 + j: %ld\n", i, j, (i*8 + j) );
-                }
-        }
-        // char_to_bit_string(entropy[0], bit_str);
-        print_char_array(entropy_str, sizeof(entropy_str));
+        unsigned char buffer[SHA256_DIGEST_LENGTH];
+        size_t length = 32;
+        *SHA256(entropy, length, buffer);
+        for (size_t i = 0; i < SHA256_DIGEST_LENGTH; ++i)
+            printf("%02x", buffer[i]);
+        putchar('\n');
+        printf("length (hexadecimal): %d\n", SHA256_DIGEST_LENGTH);
+        // unsigned char bit_str[8];
+        // for(size_t i = 0; i < sizeof(entropy); i++) {
+        //         char_to_bit_string(entropy[i], bit_str);
+        //         for(size_t j = 0; j < sizeof(bit_str); j++) {
+        //                 entropy_str[i*8 + j] = bit_str[j];
+        //                 printf("i: %ld, j: %ld, i*8 + j: %ld\n", i, j, (i*8 + j) );
+        //         }
+        // }
+        // // char_to_bit_string(entropy[0], bit_str);
+        // print_char_array(entropy_str, sizeof(entropy_str));
         return 0;
 }
