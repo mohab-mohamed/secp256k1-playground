@@ -93,6 +93,7 @@ int main(int argc, char **argv)
         random = generate_random_bytes(entropy, 32);
         unsigned char buffer[SHA256_DIGEST_LENGTH];
         size_t length = 32;
+        dump("entropy", entropy, 32);
         *SHA256(entropy, length, buffer);
         for (size_t i = 0; i < SHA256_DIGEST_LENGTH; ++i)
             printf("%02x", buffer[i]);
