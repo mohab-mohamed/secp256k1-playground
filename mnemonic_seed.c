@@ -130,15 +130,11 @@ int main(int argc, char **argv)
                 for(size_t j = 0; j < sizeof(temp); j++) {
                         temp[j] = mnemonic_bit_str[i*sizeof(temp) + j];
                 }
-                unsigned char temp_rev[11];
-                for(size_t j = 0; j < sizeof(temp_rev); j++) {
-                        temp_rev[j] = temp[sizeof(temp) - j - 1];
-                }
                 print_char_array("mnemonic bit", temp, 11);
-                print_char_array("mnemonic bit reverse", temp_rev, 11);
-                for(size_t j = 0; j < sizeof(temp_rev); j++) {
-                        tmp = pow(2, j)*(temp_rev[j] == 1) + tmp;
+                for(size_t j = 0; j < sizeof(temp); j++) {
+                        tmp = pow(2, j)*(temp[sizeof(temp) - j - 1] == 1) + tmp;
                 }
+                menmonic_bit_chunks[i] = tmp;
                 printf("mnemonic word number: %d\n", tmp);
         }
 
