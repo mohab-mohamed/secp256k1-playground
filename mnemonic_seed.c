@@ -1,6 +1,7 @@
 #include "fastpbkdf2.h"
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 
 #include <openssl/rand.h>
 #include <openssl/sha.h>
@@ -116,10 +117,19 @@ int main(int argc, char **argv)
                         mnemonic_bit_str[i*sizeof(temp) + j] = temp[j]; 
                 }
         }
-
-        unsigned char menmonic_bit_chunks[24];
-
         print_char_array("menmonic_bit_str", mnemonic_bit_str, 264);
+
+        unsigned short int menmonic_bit_chunks[24];
+        for(size_t i = 0; i < 24; i++) {
+                unsigned char temp[11];
+                for(size_t j = 0; j < sizeof(temp); j++) {
+                        temp[j] = mnemonic_bit_str[i*sizeof(temp) + j];
+                }
+                print_char_array("mnemonic bit", temp, 11);
+                printf("mnemonic word number: %ld\n", strtol(temp, NULL, 2));
+        }
+
+        
 
         return 0;
 }
