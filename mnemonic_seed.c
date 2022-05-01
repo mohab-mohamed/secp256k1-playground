@@ -138,7 +138,27 @@ int main(int argc, char **argv)
                 printf("mnemonic word number: %d\n", tmp);
         }
 
+        FILE * fp;
+        char * line = NULL;
+        size_t len = 0;
+        ssize_t read;
+        unsigned char word_list[2048][9];
+
+        fp = fopen("wordlist.txt", "r");
+        if (fp == NULL)
+                exit(EXIT_FAILURE);
         
+        int n = 0;
+        while ((read = getline(&line, &len, fp)) != -1) {
+                // printf("Retrieved line of length %zu:\n", read);
+                strcpy(word_list[n], line); 
+                n++;
+                
+        }
+
+        fclose(fp);
+        if (line)
+                free(line);
 
         return 0;
 }
