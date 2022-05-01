@@ -1,5 +1,7 @@
 #include "fastpbkdf2.h"
 #include <stdio.h>
+#include <string.h>
+#include <math.h>
 
 #include <openssl/rand.h>
 #include <openssl/sha.h>
@@ -36,6 +38,16 @@ static void byte_array_to_bit_string(unsigned char *byte, unsigned char *buffer)
         // sprintf(buffer, "%08b", byte[0])
 }
 
+// prints char array
+static void print_char_array(const char *label, unsigned char *buffer, size_t buffer_length) 
+{
+        printf("%s: ", label);
+        for(size_t i = 0; i < buffer_length; i++) {
+                printf("%d", buffer[i]);
+        }
+        putchar('\n');
+}
+
 // char to bit string
 static void char_to_bit_string(char c, char *out_str)
 {
@@ -46,6 +58,7 @@ static void char_to_bit_string(char c, char *out_str)
         i++;
         mask >>= 1; /* move the bit down */ 
     }
+    
 }
 
 // static void 
@@ -56,15 +69,7 @@ static void char_to_bit_string(char c, char *out_str)
 //     strncpy(result, str + start, end - start);
 // }
 
-// prints char array
-static void print_char_array(unsigned char *buffer, size_t buffer_length) 
-{
-        printf("size of buffer: %ld\n", buffer_length);
-        for(size_t i = 0; i < buffer_length; i++) {
-                printf("%d", buffer[i]);
-        }
-        putchar('\n');
-}
+
 
 // prints byte array into hex string
 static void dump(const char *label, const uint8_t *data, size_t n)
@@ -73,6 +78,10 @@ static void dump(const char *label, const uint8_t *data, size_t n)
   for (size_t i = 0; i < n; i++)
     printf("%02x", data[i]);
   printf("\n");
+}
+
+int fromBinary(const char *s) {
+  return (int) strtol(s, NULL, 2);
 }
 
 int main(int argc, char **argv)
@@ -91,23 +100,45 @@ int main(int argc, char **argv)
         unsigned char entropy[32];
         unsigned char entropy_str[256];
         random = generate_random_bytes(entropy, 32);
+        
         unsigned char buffer[SHA256_DIGEST_LENGTH];
         size_t length = 32;
         dump("entropy", entropy, 32);
         *SHA256(entropy, length, buffer);
-        for (size_t i = 0; i < SHA256_DIGEST_LENGTH; ++i)
-            printf("%02x", buffer[i]);
-        putchar('\n');
-        printf("length (hexadecimal): %d\n", SHA256_DIGEST_LENGTH);
-        // unsigned char bit_str[8];
-        // for(size_t i = 0; i < sizeof(entropy); i++) {
-        //         char_to_bit_string(entropy[i], bit_str);
-        //         for(size_t j = 0; j < sizeof(bit_str); j++) {
-        //                 entropy_str[i*8 + j] = bit_str[j];
-        //                 printf("i: %ld, j: %ld, i*8 + j: %ld\n", i, j, (i*8 + j) );
-        //         }
-        // }
-        // // char_to_bit_string(entropy[0], bit_str);
-        // print_char_array(entropy_str, sizeof(entropy_str));
+        
+        unsigned char mnemonic[33];
+        memcpy(mnemonic, entropy, sizeof(mnemonic));
+        mnemonic[33] = buffer[0];
+        dump("sha256", buffer, 32);
+        dump("mnemonic", mnemonic, 33);
+        
+        unsigned char mnemonic_bit_str[264];
+        for(size_t i = 0; i < sizeof(mnemonic); i++) {
+                unsigned char temp[8];
+                char_to_bit_string(mnemonic[i], temp);
+                print_char_array("temp", temp, 8);
+                for(size_t j = 0; j < sizeof(temp); j++) {
+                        mnemonic_bit_str[i*sizeof(temp) + j] = temp[j]; 
+                }
+        }
+        print_char_array("menmonic_bit_str", mnemonic_bit_str, 264);
+
+        unsigned short int menmonic_bit_chunks[24];
+        for(size_t i = 0; i < 24; i++) {
+                unsigned char temp[11];
+                unsigned short int tmp = 0;
+                for(size_t j = 0; j < sizeof(temp); j++) {
+                        temp[j] = mnemonic_bit_str[i*sizeof(temp) + j];
+                }
+                print_char_array("mnemonic bit", temp, 11);
+                for(size_t j = 0; j < sizeof(temp); j++) {
+                        tmp = pow(2, j)*(temp[sizeof(temp) - j - 1] == 1) + tmp;
+                }
+                menmonic_bit_chunks[i] = tmp;
+                printf("mnemonic word number: %d\n", tmp);
+        }
+
+        
+
         return 0;
 }
