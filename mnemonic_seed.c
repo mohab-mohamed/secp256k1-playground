@@ -85,17 +85,7 @@ int fromBinary(const char *s) {
 }
 
 int main(int argc, char **argv)
-{
-        // uint8_t *pw = "password";
-        // size_t npw = 8;
-        // uint8_t *salt = "salt";
-        // size_t nsalt = 4;
-        // uint32_t iterations = 4096;
-        // uint8_t out[128];
-        // size_t nout = sizeof(out);
-        // fastpbkdf2_hmac_sha512(pw, npw, salt, nsalt, iterations, out, nout);
-        // dump("got", out, nout);
-        
+{       
         uint8_t random;
         unsigned char entropy[32];
         unsigned char entropy_str[256];
@@ -116,26 +106,26 @@ int main(int argc, char **argv)
         for(size_t i = 0; i < sizeof(mnemonic); i++) {
                 unsigned char temp[8];
                 char_to_bit_string(mnemonic[i], temp);
-                print_char_array("temp", temp, 8);
+                // print_char_array("temp", temp, 8);
                 for(size_t j = 0; j < sizeof(temp); j++) {
                         mnemonic_bit_str[i*sizeof(temp) + j] = temp[j]; 
                 }
         }
-        print_char_array("menmonic_bit_str", mnemonic_bit_str, 264);
+        // print_char_array("menmonic_bit_str", mnemonic_bit_str, 264);
 
-        unsigned short int menmonic_bit_chunks[24];
+        unsigned short int mnemonic_indicies[24];
         for(size_t i = 0; i < 24; i++) {
                 unsigned char temp[11];
                 unsigned short int tmp = 0;
                 for(size_t j = 0; j < sizeof(temp); j++) {
                         temp[j] = mnemonic_bit_str[i*sizeof(temp) + j];
                 }
-                print_char_array("mnemonic bit", temp, 11);
+                // print_char_array("mnemonic bit", temp, 11);
                 for(size_t j = 0; j < sizeof(temp); j++) {
                         tmp = pow(2, j)*(temp[sizeof(temp) - j - 1] == 1) + tmp;
                 }
-                menmonic_bit_chunks[i] = tmp;
-                printf("mnemonic word number: %d\n", tmp);
+                mnemonic_indicies[i] = tmp;
+                // printf("mnemonic word number: %d\n", tmp);
         }
 
         FILE * fp;
@@ -144,6 +134,8 @@ int main(int argc, char **argv)
         ssize_t read;
         unsigned char word_list[2048][9];
 
+
+
         fp = fopen("wordlist.txt", "r");
         if (fp == NULL)
                 exit(EXIT_FAILURE);
@@ -151,6 +143,7 @@ int main(int argc, char **argv)
         int n = 0;
         while ((read = getline(&line, &len, fp)) != -1) {
                 // printf("Retrieved line of length %zu:\n", read);
+                line[strcspn(line, "\n")] = 0;   
                 strcpy(word_list[n], line); 
                 n++;
                 
@@ -159,6 +152,32 @@ int main(int argc, char **argv)
         fclose(fp);
         if (line)
                 free(line);
+
+        size_t seed_length = strlen(word_list[mnemonic_indicies[0]]) + 1;
+        unsigned char password[9*24];
+        strcpy(password, strcat(word_list[mnemonic_indicies[0]], " "));
+
+        for(size_t i = 1; i < sizeof(mnemonic_indicies)/sizeof(unsigned short int); i++) {
+                if(i < sizeof(mnemonic_indicies)/sizeof(unsigned short int) - 1) {
+                        strcat(word_list[mnemonic_indicies[i]], " ");
+                }
+                strcat(password, word_list[mnemonic_indicies[i]]);
+                
+                
+                // printf("%s", word_list[mnemonic_indicies[i]]);
+                // printf("%ld", strlen(word_list[mnemonic_indicies[i]]));
+        }
+        printf("seed phrase/password: %s\n", password);
+
+        uint8_t *pw = password;
+        size_t npw = strlen(password);
+        uint8_t *salt = "mnemonic";
+        size_t nsalt = 8;
+        uint32_t iterations = 2048;
+        uint8_t out[64];
+        size_t nout = sizeof(out);
+        fastpbkdf2_hmac_sha512(pw, npw, salt, nsalt, iterations, out, nout);
+        dump("got", out, nout);
 
         return 0;
 }
