@@ -116,26 +116,26 @@ int main(int argc, char **argv)
         for(size_t i = 0; i < sizeof(mnemonic); i++) {
                 unsigned char temp[8];
                 char_to_bit_string(mnemonic[i], temp);
-                print_char_array("temp", temp, 8);
+                // print_char_array("temp", temp, 8);
                 for(size_t j = 0; j < sizeof(temp); j++) {
                         mnemonic_bit_str[i*sizeof(temp) + j] = temp[j]; 
                 }
         }
-        print_char_array("menmonic_bit_str", mnemonic_bit_str, 264);
+        // print_char_array("menmonic_bit_str", mnemonic_bit_str, 264);
 
-        unsigned short int menmonic_bit_chunks[24];
+        unsigned short int mnemonic_indicies[24];
         for(size_t i = 0; i < 24; i++) {
                 unsigned char temp[11];
                 unsigned short int tmp = 0;
                 for(size_t j = 0; j < sizeof(temp); j++) {
                         temp[j] = mnemonic_bit_str[i*sizeof(temp) + j];
                 }
-                print_char_array("mnemonic bit", temp, 11);
+                // print_char_array("mnemonic bit", temp, 11);
                 for(size_t j = 0; j < sizeof(temp); j++) {
                         tmp = pow(2, j)*(temp[sizeof(temp) - j - 1] == 1) + tmp;
                 }
-                menmonic_bit_chunks[i] = tmp;
-                printf("mnemonic word number: %d\n", tmp);
+                mnemonic_indicies[i] = tmp;
+                // printf("mnemonic word number: %d\n", tmp);
         }
 
         FILE * fp;
@@ -159,6 +159,10 @@ int main(int argc, char **argv)
         fclose(fp);
         if (line)
                 free(line);
+
+        for(size_t i = 0; i < sizeof(mnemonic_indicies)/sizeof(unsigned short int); i++) {
+                printf("%s", word_list[mnemonic_indicies[i]]);
+        }
 
         return 0;
 }
