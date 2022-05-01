@@ -80,6 +80,10 @@ static void dump(const char *label, const uint8_t *data, size_t n)
   printf("\n");
 }
 
+int fromBinary(const char *s) {
+  return (int) strtol(s, NULL, 2);
+}
+
 int main(int argc, char **argv)
 {
         // uint8_t *pw = "password";
@@ -122,11 +126,20 @@ int main(int argc, char **argv)
         unsigned short int menmonic_bit_chunks[24];
         for(size_t i = 0; i < 24; i++) {
                 unsigned char temp[11];
+                unsigned short int tmp = 0;
                 for(size_t j = 0; j < sizeof(temp); j++) {
                         temp[j] = mnemonic_bit_str[i*sizeof(temp) + j];
                 }
+                unsigned char temp_rev[11];
+                for(size_t j = 0; j < sizeof(temp_rev); j++) {
+                        temp_rev[j] = temp[sizeof(temp) - j - 1];
+                }
                 print_char_array("mnemonic bit", temp, 11);
-                printf("mnemonic word number: %ld\n", strtol(temp, NULL, 2));
+                print_char_array("mnemonic bit reverse", temp_rev, 11);
+                for(size_t j = 0; j < sizeof(temp_rev); j++) {
+                        tmp = pow(2, j)*(temp_rev[j] == 1) + tmp;
+                }
+                printf("mnemonic word number: %d\n", tmp);
         }
 
         
