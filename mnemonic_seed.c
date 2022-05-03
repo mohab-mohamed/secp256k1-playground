@@ -190,5 +190,11 @@ int main(int argc, char **argv)
         * SECP256K1_CONTEXT_VERIFY flags. */
         secp256k1_context* ctx = secp256k1_context_create(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
 
+        /* Randomizing the context is recommended to protect against side-channel
+        * leakage See `secp256k1_context_randomize` in secp256k1.h for more
+        * information about it. This should never fail. */
+        return_val = secp256k1_context_randomize(ctx, randomize);
+        assert(return_val);
+
         return 0;
 }
