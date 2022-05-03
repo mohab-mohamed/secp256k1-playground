@@ -180,6 +180,7 @@ int main(int argc, char **argv)
         fastpbkdf2_hmac_sha512(pw, npw, salt, nsalt, iterations, out, nout);
         dump("got", out, nout);
 
+        unsigned char randomize[32];
         int return_val;
         secp256k1_pubkey pubkey;
         secp256k1_ecdsa_signature sig;
@@ -189,12 +190,19 @@ int main(int argc, char **argv)
         * for both signing and verification with the SECP256K1_CONTEXT_SIGN and
         * SECP256K1_CONTEXT_VERIFY flags. */
         secp256k1_context* ctx = secp256k1_context_create(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
-
+        if (!fill_random(randomize, sizeof(randomize))) {
+                printf("Failed to generate randomness\n");
+                return 1;
+        }
         /* Randomizing the context is recommended to protect against side-channel
         * leakage See `secp256k1_context_randomize` in secp256k1.h for more
         * information about it. This should never fail. */
         return_val = secp256k1_context_randomize(ctx, randomize);
         assert(return_val);
+
+        if (!secp256k1_ec_seckey_verify(ctx, seckey)) {
+            return -1;
+        }
 
         return 0;
 }
