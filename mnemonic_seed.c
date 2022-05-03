@@ -5,6 +5,7 @@
 
 #include <openssl/rand.h>
 #include <openssl/sha.h>
+#include "secp256k1.h"
 
 // generates random number of bytes 
 static int generate_random_bytes(unsigned char *buf, int num)
