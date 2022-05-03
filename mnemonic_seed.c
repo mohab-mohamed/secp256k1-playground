@@ -180,6 +180,7 @@ int main(int argc, char **argv)
         fastpbkdf2_hmac_sha512(pw, npw, salt, nsalt, iterations, out, nout);
         dump("got", out, nout);
 
+        unsigned char seckey[32];
         unsigned char randomize[32];
         int return_val;
         secp256k1_pubkey pubkey;
@@ -203,6 +204,6 @@ int main(int argc, char **argv)
         if (!secp256k1_ec_seckey_verify(ctx, seckey)) {
             return -1;
         }
-
+        // return_val = secp256k1_ec_pubkey_create(ctx, &pubkey, seckey);
         return 0;
 }
