@@ -1,2 +1,6 @@
-# secp256k1-playground
-Playground for learning to utilize Pieter Wuille's secp256k1 C implementation
+# mnemonic seed generation via OpenSSL
+
+# extended key generation via Pieter Wuille's secp256k1 C implementation
+
+# derivation paths via generated extended key
+
