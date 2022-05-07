@@ -204,6 +204,6 @@ int main(int argc, char **argv)
         if (!secp256k1_ec_seckey_verify(ctx, seckey)) {
             return -1;
         }
-        // return_val = secp256k1_ec_pubkey_create(ctx, &pubkey, seckey);
+        return_val = secp256k1_ec_pubkey_create(ctx, &pubkey, seckey);
         return 0;
 }
