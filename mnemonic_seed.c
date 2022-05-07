@@ -107,12 +107,10 @@ int main(int argc, char **argv)
         for(size_t i = 0; i < sizeof(mnemonic); i++) {
                 unsigned char temp[8];
                 char_to_bit_string(mnemonic[i], temp);
-                // print_char_array("temp", temp, 8);
                 for(size_t j = 0; j < sizeof(temp); j++) {
                         mnemonic_bit_str[i*sizeof(temp) + j] = temp[j]; 
                 }
         }
-        // print_char_array("menmonic_bit_str", mnemonic_bit_str, 264);
 
         unsigned short int mnemonic_indicies[24];
         for(size_t i = 0; i < 24; i++) {
@@ -121,12 +119,10 @@ int main(int argc, char **argv)
                 for(size_t j = 0; j < sizeof(temp); j++) {
                         temp[j] = mnemonic_bit_str[i*sizeof(temp) + j];
                 }
-                // print_char_array("mnemonic bit", temp, 11);
                 for(size_t j = 0; j < sizeof(temp); j++) {
                         tmp = pow(2, j)*(temp[sizeof(temp) - j - 1] == 1) + tmp;
                 }
                 mnemonic_indicies[i] = tmp;
-                // printf("mnemonic word number: %d\n", tmp);
         }
 
         FILE * fp;
@@ -143,7 +139,6 @@ int main(int argc, char **argv)
         
         int n = 0;
         while ((read = getline(&line, &len, fp)) != -1) {
-                // printf("Retrieved line of length %zu:\n", read);
                 line[strcspn(line, "\n")] = 0;   
                 strcpy(word_list[n], line); 
                 n++;
@@ -163,10 +158,6 @@ int main(int argc, char **argv)
                         strcat(word_list[mnemonic_indicies[i]], " ");
                 }
                 strcat(password, word_list[mnemonic_indicies[i]]);
-                
-                
-                // printf("%s", word_list[mnemonic_indicies[i]]);
-                // printf("%ld", strlen(word_list[mnemonic_indicies[i]]));
         }
         printf("seed phrase/password: %s\n", password);
 
@@ -204,6 +195,6 @@ int main(int argc, char **argv)
         if (!secp256k1_ec_seckey_verify(ctx, seckey)) {
             return -1;
         }
-        // return_val = secp256k1_ec_pubkey_create(ctx, &pubkey, seckey);
+        return_val = secp256k1_ec_pubkey_create(ctx, &pubkey, seckey);
         return 0;
 }
