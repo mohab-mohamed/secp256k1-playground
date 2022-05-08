@@ -176,19 +176,13 @@ int main(int argc, char **argv)
         int return_val;
         secp256k1_pubkey pubkey;
         secp256k1_ecdsa_signature sig;
-        /* The specification in secp256k1.h states that `secp256k1_ec_pubkey_create` needs
-        * a context object initialized for signing and `secp256k1_ecdsa_verify` needs
-        * a context initialized for verification, which is why we create a context
-        * for both signing and verification with the SECP256K1_CONTEXT_SIGN and
-        * SECP256K1_CONTEXT_VERIFY flags. */
+
         secp256k1_context* ctx = secp256k1_context_create(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
         if (!fill_random(randomize, sizeof(randomize))) {
                 printf("Failed to generate randomness\n");
                 return 1;
         }
-        /* Randomizing the context is recommended to protect against side-channel
-        * leakage See `secp256k1_context_randomize` in secp256k1.h for more
-        * information about it. This should never fail. */
+
         return_val = secp256k1_context_randomize(ctx, randomize);
         assert(return_val);
 
