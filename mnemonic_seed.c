@@ -182,9 +182,7 @@ int main(int argc, char **argv)
                 printf("Failed to generate randomness\n");
                 return 1;
         }
-        /* Randomizing the context is recommended to protect against side-channel
-        * leakage See `secp256k1_context_randomize` in secp256k1.h for more
-        * information about it. This should never fail. */
+
         return_val = secp256k1_context_randomize(ctx, randomize);
         assert(return_val);
 
