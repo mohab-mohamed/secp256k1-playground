@@ -91,7 +91,7 @@ int main(int argc, char **argv)
         unsigned char entropy[32];
         unsigned char entropy_str[256];
         random = generate_random_bytes(entropy, 32);
-        
+        /
         unsigned char buffer[SHA256_DIGEST_LENGTH];
         size_t length = 32;
         dump("entropy", entropy, 32);
